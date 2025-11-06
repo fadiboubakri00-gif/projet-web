@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}OrderItem index{% endblock %}
+
+{% block body %}
+    <h1>OrderItem index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Quantite</th>
+                <th>PrixUnitaire</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for order_item in order_items %}
+            <tr>
+                <td>{{ order_item.id }}</td>
+                <td>{{ order_item.quantite }}</td>
+                <td>{{ order_item.prixUnitaire }}</td>
+                <td>
+                    <a href="{{ path('app_order_item_show', {'id': order_item.id}) }}">show</a>
+                    <a href="{{ path('app_order_item_edit', {'id': order_item.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_order_item_new') }}">Create new</a>
+{% endblock %}

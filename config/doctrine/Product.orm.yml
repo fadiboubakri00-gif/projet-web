@@ -1,0 +1,14 @@
+App\Entity\Product:
+  type: entity
+  table: products
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    nom: { type: string, length: 255 }
+    description: { type: text }
+    prix: { type: decimal, precision: 10, scale: 2 }
+    stock: { type: integer }
+    image: { type: string, length: 255 }
+    dateAjout: { type: datetime_immutable }

@@ -1,0 +1,18 @@
+App\Entity\Address:
+  type: entity
+  table: addresses
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    ligne: { type: string, length: 255 }
+    ville: { type: string, length: 100 }
+    codePostal: { type: string, length: 20 }
+    pays: { type: string, length: 100 }
+  manyToOne:
+    user:
+      targetEntity: App\Entity\User
+      inversedBy: addresses
+      joinColumn: { nullable: false }
+

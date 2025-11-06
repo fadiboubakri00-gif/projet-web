@@ -1,0 +1,19 @@
+App\Entity\Cart:
+  type: entity
+  table: carts
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    dateCreation: { type: datetime_immutable }
+    actif: { type: boolean }
+  manyToOne:
+    user:
+      targetEntity: App\Entity\User
+      inversedBy: carts
+      joinColumn: { nullable: false }
+  oneToMany:
+    cartItems:
+      targetEntity: App\Entity\CartItem
+      mappedBy: cart

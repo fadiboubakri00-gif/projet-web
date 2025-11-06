@@ -1,0 +1,28 @@
+App\Entity\Order:
+  type: entity
+  table: orders
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    total: { type: decimal, precision: 10, scale: 2 }
+    statut: { type: string, length: 50 }
+    dateCommande: { type: datetime_immutable }
+  manyToOne:
+    user:
+      targetEntity: App\Entity\User
+      inversedBy: orders
+      joinColumn: { nullable: false }
+    adresse:
+      targetEntity: App\Entity\Address
+      joinColumn: { nullable: false }
+  oneToOne:
+    payment:
+      targetEntity: App\Entity\Payment
+      mappedBy: order
+  oneToMany:
+    orderItems:
+      targetEntity: App\Entity\OrderItem
+      mappedBy: order
+

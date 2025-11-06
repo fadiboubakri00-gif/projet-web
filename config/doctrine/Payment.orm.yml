@@ -1,0 +1,17 @@
+App\Entity\Payment:
+  type: entity
+  table: payments
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    montant: { type: decimal, precision: 10, scale: 2 }
+    modePaiement: { type: string, length: 50 }
+    datePaiement: { type: datetime_immutable }
+    statut: { type: string, length: 50 }
+  oneToOne:
+    order:
+      targetEntity: App\Entity\Order
+      inversedBy: payment
+      joinColumn: { nullable: false }

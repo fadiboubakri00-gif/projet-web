@@ -1,0 +1,18 @@
+App\Entity\CartItem:
+  type: entity
+  table: cart_items
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    quantite: { type: integer }
+    sousTotal: { type: decimal, precision: 10, scale: 2 }
+  manyToOne:
+    cart:
+      targetEntity: App\Entity\Cart
+      inversedBy: cartItems
+      joinColumn: { nullable: false }
+    product:
+      targetEntity: App\Entity\Product
+      joinColumn: { nullable: false }

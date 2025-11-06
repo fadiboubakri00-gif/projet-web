@@ -19,9 +19,10 @@ doctrine:
         auto_mapping: true
         mappings:
             App:
-                type: attribute
+                type: yml
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Entity'
+                
+                dir: '%kernel.project_dir%/config/doctrine'
                 prefix: 'App\Entity'
                 alias: App
         controller_resolver:
