@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="dashboard-title">🎵 Darbouka Admin Dashboard</h1>
+
+    <div class="row justify-content-center g-4">
+        <div class="col-md-4">
+            <a href="{{ path('app_user_index') }}" class="text-decoration-none">
+                <div class="card p-4 text-center">
+                    <i class="bi bi-person-circle entity-icon"></i>
+                    <h5 class="card-title mt-3">Users</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ path('app_product_index') }}" class="text-decoration-none">
+                <div class="card p-4 text-center">
+                    <i class="bi bi-box-seam entity-icon"></i>
+                    <h5 class="card-title mt-3">Products</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ path('app_category_index') }}" class="text-decoration-none">
+                <div class="card p-4 text-center">
+                    <i class="bi bi-tags-fill entity-icon"></i>
+                    <h5 class="card-title mt-3">Categories</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ path('app_cart_index') }}" class="text-decoration-none">
+                <div class="card p-4 text-center">
+                    <i class="bi bi-basket-fill entity-icon"></i>
+                    <h5 class="card-title mt-3">Carts</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ path('app_order_index') }}" class="text-decoration-none">
+                <div class="card p-4 text-center">
+                    <i class="bi bi-receipt entity-icon"></i>
+                    <h5 class="card-title mt-3">Orders</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
