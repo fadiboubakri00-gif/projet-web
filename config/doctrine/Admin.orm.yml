@@ -1,0 +1,11 @@
+App\Entity\Admin:
+  type: entity
+  table: admins
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    username: { type: string, length: 180, unique: true }
+    password: { type: string, length: 255 }
+  # You can add other fields like roles if needed
