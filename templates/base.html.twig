@@ -11,9 +11,6 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
     {% block stylesheets %}
     <style>
         body {
@@ -30,12 +27,8 @@
             backdrop-filter: blur(10px);
         }
 
-        .nav-link:hover {
-            text-decoration: underline;
-        }
-
         .dashboard-container {
-            padding: 120px 20px 50px 20px; /* top padding increased so content is below navbar */
+            padding: 120px 20px 50px 20px;
         }
 
         .dashboard-title {
@@ -52,6 +45,7 @@
             border: 1px solid rgba(255,255,255,0.1);
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .card:hover {
@@ -69,22 +63,20 @@
             transform: scale(1.2);
         }
 
-        .btn-custom {
-            border-radius: 50px;
+        .card h3.count {
+            font-size: 2rem;
+            color: #00d2ff;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .card p {
             font-weight: 600;
-            transition: all 0.3s ease;
         }
 
-        .btn-custom:hover {
-            color: #fff !important;
-            transform: translateY(-2px);
-            box-shadow: 0 0 15px currentColor;
-        }
-
-        /* Dark/Light toggle button */
         .theme-toggle {
             position: fixed;
-            top: 80px; /* lowered so it doesn't overlap navbar */
+            top: 80px;
             right: 20px;
             background: linear-gradient(135deg, #00d2ff, #3a7bd5);
             border-radius: 50%;
@@ -128,7 +120,6 @@
     </div>
 </nav>
 
-<!-- Dark/Light toggle -->
 <div class="theme-toggle" id="themeToggle">
     <i class="bi bi-moon-stars-fill"></i>
 </div>
@@ -141,14 +132,12 @@
     &copy; {{ "now"|date("Y") }} Darbouka Admin Dashboard
 </footer>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 const toggle = document.getElementById('themeToggle');
 const icon = toggle.querySelector('i');
 let dark = true;
-
 toggle.addEventListener('click', () => {
     document.body.style.background = dark
         ? 'linear-gradient(135deg, #e3f2fd, #ffffff)'
@@ -157,7 +146,6 @@ toggle.addEventListener('click', () => {
 
     icon.classList.toggle('bi-brightness-high-fill');
     icon.classList.toggle('bi-moon-stars-fill');
-
     icon.style.color = dark ? '#fff' : '#ffd700';
 
     dark = !dark;
