@@ -1,39 +1,44 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User index{% endblock %}
+{% block title %}Users{% endblock %}
 
 {% block body %}
-    <h1>User index</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Users</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Password</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.password }}</td>
-                <td>
-                    <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="text-end mb-3">
+        <a href="{{ path('app_user_new') }}" class="btn btn-success btn-lg">
+            <i class="bi bi-plus-circle"></i> Create New User
+        </a>
+    </div>
 
-    <a href="{{ path('app_user_new') }}">Create new</a>
+    {% if users is empty %}
+        <p class="text-center text-muted">No users found.</p>
+    {% else %}
+        <div class="row g-4">
+            {% for user in users %}
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title">{{ user.username }}</h5>
+                        <span class="badge bg-primary">ID: {{ user.id }}</span>
+                    </div>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Carts:</strong> {{ user.carts|length }}</p>
+                    <p><strong>Orders:</strong> {{ user.orders|length }}</p>
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-info btn-sm">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                        <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        {{ include('user/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

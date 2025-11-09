@@ -1,35 +1,49 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Order index{% endblock %}
+{% block title %}Orders{% endblock %}
 
 {% block body %}
-    <h1>Order index</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Orders</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>TotalPrice</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for order in orders %}
-            <tr>
-                <td>{{ order.id }}</td>
-                <td>{{ order.totalPrice }}</td>
-                <td>
-                    <a href="{{ path('app_order_show', {'id': order.id}) }}">show</a>
-                    <a href="{{ path('app_order_edit', {'id': order.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="text-end mb-3">
+        <a href="{{ path('app_order_new') }}" class="btn btn-success btn-lg">
+            <i class="bi bi-plus-circle"></i> Create New Order
+        </a>
+    </div>
 
-    <a href="{{ path('app_order_new') }}">Create new</a>
+    {% if orders is empty %}
+        <p class="text-center text-muted">No orders found.</p>
+    {% else %}
+        <div class="row g-4">
+            {% for order in orders %}
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title">Order #{{ order.id }}</h5>
+                        <span class="badge bg-primary">Total: ${{ order.totalPrice }}</span>
+                    </div>
+                    <p><strong>User:</strong> {{ order.orderUser.username }}</p>
+                    <p><strong>Products:</strong>
+                        {% if order.products|length > 0 %}
+                            {{ order.products|map(p => p.libelle)|join(', ') }}
+                        {% else %}
+                            None
+                        {% endif %}
+                    </p>
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="{{ path('app_order_show', {'id': order.id}) }}" class="btn btn-info btn-sm">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                        <a href="{{ path('app_order_edit', {'id': order.id}) }}" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        {{ include('order/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

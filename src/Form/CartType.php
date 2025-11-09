@@ -24,6 +24,8 @@ class CartType extends AbstractType
                 'class' => Product::class,
                 'choice_label' => 'id',
                 'multiple' => true,
+                'required' => false,          // <-- make this optional
+                'placeholder' => 'Select products (optional)',  // nice UX
             ])
         ;
     }

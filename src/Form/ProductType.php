@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Cart;
 use App\Entity\Category;
 use App\Entity\Order;
 use App\Entity\Product;
@@ -22,18 +21,16 @@ class ProductType extends AbstractType
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'id',
-            ])
-            ->add('carts', EntityType::class, [
-                'class' => Cart::class,
-                'choice_label' => 'id',
-                'multiple' => true,
+                'required' => false,
+                'placeholder' => 'Select a category (optional)',
             ])
             ->add('orders', EntityType::class, [
                 'class' => Order::class,
                 'choice_label' => 'id',
                 'multiple' => true,
-            ])
-        ;
+                'required' => false,
+                'placeholder' => 'Select orders (optional)',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

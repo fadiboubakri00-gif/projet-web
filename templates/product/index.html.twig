@@ -1,39 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Product index{% endblock %}
+{% block title %}Products{% endblock %}
 
 {% block body %}
-    <h1>Product index</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Products</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Libelle</th>
-                <th>Price</th>
-                <th>Description</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for product in products %}
-            <tr>
-                <td>{{ product.id }}</td>
-                <td>{{ product.libelle }}</td>
-                <td>{{ product.price }}</td>
-                <td>{{ product.description }}</td>
-                <td>
-                    <a href="{{ path('app_product_show', {'id': product.id}) }}">show</a>
-                    <a href="{{ path('app_product_edit', {'id': product.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="text-end mb-3">
+        <a href="{{ path('app_product_new') }}" class="btn btn-success btn-lg">
+            <i class="bi bi-plus-circle"></i> Create New Product
+        </a>
+    </div>
 
-    <a href="{{ path('app_product_new') }}">Create new</a>
+    {% if products is empty %}
+        <p class="text-center text-muted">No products found.</p>
+    {% else %}
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title">{{ product.libelle }}</h5>
+                        <span class="badge bg-primary">${{ product.price }}</span>
+                    </div>
+                    <p><strong>Category:</strong> {{ product.category ? product.category.name : 'None' }}</p>
+                    <p><strong>Description:</strong> {{ product.description ?: 'No description' }}</p>
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-info btn-sm">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                        <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        {{ include('product/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

@@ -3,9 +3,27 @@
 {% block title %}New Category{% endblock %}
 
 {% block body %}
-    <h1>Create new Category</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Create New Category</h1>
 
-    {{ include('category/_form.html.twig') }}
+    {{ form_start(form) }}
 
-    <a href="{{ path('app_category_index') }}">back to list</a>
+    <div class="row g-3">
+        <div class="col-12">
+            {{ form_label(form.name, 'Category Name') }}
+            {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Enter category name'}}) }}
+            {{ form_errors(form.name) }}
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <button class="btn btn-primary btn-lg">Save Category</button>
+    </div>
+
+    {{ form_end(form) }}
+
+    <div class="mt-3 text-center">
+        <a href="{{ path('app_category_index') }}" class="btn btn-secondary">Back to list</a>
+    </div>
+</div>
 {% endblock %}

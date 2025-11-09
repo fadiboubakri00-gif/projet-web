@@ -24,8 +24,9 @@ class OrderType extends AbstractType
                 'class' => Product::class,
                 'choice_label' => 'id',
                 'multiple' => true,
-            ])
-        ;
+                'required' => false,          // <-- make optional
+                'placeholder' => 'Select products (optional)',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
