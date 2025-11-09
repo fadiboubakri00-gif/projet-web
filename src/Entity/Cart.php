@@ -23,12 +23,10 @@ class Cart
      * @var Collection<int, Product>
      */
     #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'carts')]
-    #[ORM\JoinTable(name: 'cart_products')]
+    #[ORM\JoinTable(name: 'cart_product')]
     private Collection $products;
 
-    // Remove the totalPrice column since we'll calculate it automatically
-    // #[ORM\Column]
-    // private ?float $totalPrice = null;
+    
 
     public function __construct()
     {
