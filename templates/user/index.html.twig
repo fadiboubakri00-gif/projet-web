@@ -24,8 +24,7 @@
                         <span class="badge bg-primary">ID: {{ user.id }}</span>
                     </div>
                     <p><strong>Email:</strong> {{ user.email }}</p>
-                    <p><strong>Carts:</strong> {{ user.carts|length }}</p>
-                    <p><strong>Orders:</strong> {{ user.orders|length }}</p>
+                    
                     <div class="d-flex justify-content-between mt-3">
                         <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-info btn-sm">
                             <i class="bi bi-eye"></i> View

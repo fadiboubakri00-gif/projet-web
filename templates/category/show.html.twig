@@ -1,11 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Category{% endblock %}
+{% block title %}Category Details{% endblock %}
 
 {% block body %}
-    <h1>Category</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Category Details</h1>
 
-    <table class="table">
+    <table class="table table-striped">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -16,15 +17,30 @@
                 <td>{{ category.name }}</td>
             </tr>
             <tr>
-                <th>Description</th>
-                <td>{{ category.description }}</td>
+                <th>Products</th>
+                <td>
+                    {% if category.products|length > 0 %}
+                        <ul class="list-unstyled">
+                            {% for product in category.products %}
+                                <li>{{ product.libelle }} - ${{ product.price }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        No products in this category
+                    {% endif %}
+                </td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_category_index') }}">back to list</a>
-
-    <a href="{{ path('app_category_edit', {'id': category.id}) }}">edit</a>
-
-    {{ include('category/_delete_form.html.twig') }}
+    <div class="mt-4 text-center">
+        <a href="{{ path('app_category_index') }}" class="btn btn-secondary me-2">
+            <i class="bi bi-arrow-left"></i> Back to list
+        </a>
+        <a href="{{ path('app_category_edit', {'id': category.id}) }}" class="btn btn-primary me-2">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        {{ include('category/_delete_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}

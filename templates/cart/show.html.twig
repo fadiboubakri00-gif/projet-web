@@ -1,26 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Cart{% endblock %}
+{% block title %}Cart Details{% endblock %}
 
 {% block body %}
-    <h1>Cart</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Cart Details</h1>
 
-    <table class="table">
+    <table class="table table-striped">
         <tbody>
             <tr>
                 <th>Id</th>
                 <td>{{ cart.id }}</td>
             </tr>
             <tr>
-                <th>TotalPrice</th>
-                <td>{{ cart.totalPrice }}</td>
+                <th>Owner</th>
+                <td>{{ cart.owner.username }}</td>
+            </tr>
+            <tr>
+                <th>Total Price</th>
+                <td>${{ cart.totalPrice }}</td>
+            </tr>
+            <tr>
+                <th>Products</th>
+                <td>
+                    {% if cart.products|length > 0 %}
+                        <ul class="list-unstyled">
+                            {% for product in cart.products %}
+                                <li>{{ product.libelle }} - ${{ product.price }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        No products in cart
+                    {% endif %}
+                </td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_cart_index') }}">back to list</a>
-
-    <a href="{{ path('app_cart_edit', {'id': cart.id}) }}">edit</a>
-
-    {{ include('cart/_delete_form.html.twig') }}
+    <div class="mt-4 text-center">
+        <a href="{{ path('app_cart_index') }}" class="btn btn-secondary me-2">
+            <i class="bi bi-arrow-left"></i> Back to list
+        </a>
+        <a href="{{ path('app_cart_edit', {'id': cart.id}) }}" class="btn btn-primary me-2">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        {{ include('cart/_delete_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}

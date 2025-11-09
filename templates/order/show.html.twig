@@ -1,26 +1,51 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Order{% endblock %}
+{% block title %}Order Details{% endblock %}
 
 {% block body %}
-    <h1>Order</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Order Details</h1>
 
-    <table class="table">
+    <table class="table table-striped">
         <tbody>
             <tr>
                 <th>Id</th>
                 <td>{{ order.id }}</td>
             </tr>
             <tr>
-                <th>TotalPrice</th>
-                <td>{{ order.totalPrice }}</td>
+                <th>Order User</th>
+                <td>{{ order.orderUser.username }}</td>
+            </tr>
+            <tr>
+                <th>Products</th>
+                <td>
+                    {% if order.products|length > 0 %}
+                        <ul class="list-unstyled">
+                            {% for product in order.products %}
+                                <li>{{ product.libelle }} - ${{ product.price }}</li>
+                            {% endfor %}
+                        </ul>
+                        <strong>Total: ${{ order.getTotal() }}</strong>
+                    {% else %}
+                        No products in this order
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Order Date</th>
+                <td>{{ order.orderDate ? order.orderDate|date('Y-m-d H:i:s') : 'Not set' }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_order_index') }}">back to list</a>
-
-    <a href="{{ path('app_order_edit', {'id': order.id}) }}">edit</a>
-
-    {{ include('order/_delete_form.html.twig') }}
+    <div class="mt-4 text-center">
+        <a href="{{ path('app_order_index') }}" class="btn btn-secondary me-2">
+            <i class="bi bi-arrow-left"></i> Back to list
+        </a>
+        <a href="{{ path('app_order_edit', {'id': order.id}) }}" class="btn btn-primary me-2">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        {{ include('order/_delete_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}

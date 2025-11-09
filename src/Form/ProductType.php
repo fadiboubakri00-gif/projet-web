@@ -20,17 +20,11 @@ class ProductType extends AbstractType
             ->add('description')
             ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'choice_label' => 'id',
-                'required' => false,
-                'placeholder' => 'Select a category (optional)',
-            ])
-            ->add('orders', EntityType::class, [
-                'class' => Order::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-                'required' => false,
-                'placeholder' => 'Select orders (optional)',
+                'choice_label' => 'name',
+                'required' => True,
+                'placeholder' => 'Select a category',
             ]);
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void

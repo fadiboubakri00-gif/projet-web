@@ -21,12 +21,15 @@ class CartType extends AbstractType
                 'choice_label' => 'id',
             ])
             ->add('products', EntityType::class, [
-                'class' => Product::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-                'required' => false,          // <-- make this optional
-                'placeholder' => 'Select products (optional)',  // nice UX
-            ])
+    'class' => Product::class,
+    'choice_label' => function (Product $product) {
+        return  $product->getLibelle() . ' - $' . $product->getPrice();
+    },
+    'multiple' => true,
+    'required' => true,    
+    'expanded' => true,      
+      
+])
         ;
     }
 

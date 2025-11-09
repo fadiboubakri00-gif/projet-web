@@ -15,7 +15,7 @@ class Cart
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'carts')]
+    #[ORM\OneToOne(inversedBy: 'cart', targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
@@ -31,6 +31,7 @@ class Cart
     public function __construct()
     {
         $this->products = new ArrayCollection();
+        $this->totalPrice = 0.0;
     }
 
     public function getId(): ?int
@@ -84,5 +85,16 @@ class Cart
         $this->totalPrice = $totalPrice;
 
         return $this;
+    }
+
+    
+    public function calculateTotalPrice(): float
+    {
+        $total = 0.0;
+        foreach ($this->products as $product) {
+            $total += $product->getPrice();
+        }
+        $this->totalPrice = $total;
+        return $total;
     }
 }

@@ -18,15 +18,19 @@ class OrderType extends AbstractType
             ->add('totalPrice')
             ->add('orderUser', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'id',
+                'choice_label' => 'id', 
             ])
             ->add('products', EntityType::class, [
-                'class' => Product::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-                'required' => false,          // <-- make optional
-                'placeholder' => 'Select products (optional)',
-            ]);
+    'class' => Product::class,
+    'choice_label' => function (Product $product) {
+        return  $product->getLibelle() . ' - $' . $product->getPrice();
+    },
+    'multiple' => true,
+    'required' => true,    
+    'expanded' => true,      
+      
+])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

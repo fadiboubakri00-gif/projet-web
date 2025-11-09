@@ -25,11 +25,8 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    /**
-     * @var Collection<int, Cart>
-     */
-    #[ORM\OneToMany(targetEntity: Cart::class, mappedBy: 'owner')]
-    private Collection $carts;
+    #[ORM\OneToOne(mappedBy: 'owner', targetEntity: Cart::class, cascade: ['persist', 'remove'])]
+    private ?Cart $cart = null;
 
     /**
      * @var Collection<int, Order>
@@ -39,8 +36,10 @@ class User
 
     public function __construct()
     {
-        $this->carts = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        // Automatically create a cart for the user when the user is created
+        $this->cart = new Cart();
+        $this->cart->setOwner($this);
     }
 
     public function getId(): ?int
@@ -81,31 +80,19 @@ class User
         return $this;
     }
 
-    /**
-     * @return Collection<int, Cart>
-     */
-    public function getCarts(): Collection
+    public function getCart(): ?Cart
     {
-        return $this->carts;
+        return $this->cart;
     }
 
-    public function addCart(Cart $cart): static
+    public function setCart(Cart $cart): static
     {
-        if (!$this->carts->contains($cart)) {
-            $this->carts->add($cart);
+        // set the owning side of the relation if necessary
+        if ($cart->getOwner() !== $this) {
             $cart->setOwner($this);
         }
 
-        return $this;
-    }
-
-    public function removeCart(Cart $cart): static
-    {
-        if ($this->carts->removeElement($cart)) {
-            if ($cart->getOwner() === $this) {
-                $cart->setOwner(null);
-            }
-        }
+        $this->cart = $cart;
 
         return $this;
     }

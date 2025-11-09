@@ -3,11 +3,23 @@
 {% block title %}Edit Order{% endblock %}
 
 {% block body %}
-    <h1>Edit Order</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Edit Order</h1>
 
-    {{ include('order/_form.html.twig', {'button_label': 'Update'}) }}
+    <div class="d-flex justify-content-center">
+        <div class="col-md-8">
+            {{ include('order/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_order_index') }}">back to list</a>
+            <div class="mt-4 text-center">
+                <a href="{{ path('app_order_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to list
+                </a>
+            </div>
 
-    {{ include('order/_delete_form.html.twig') }}
+            <div class="mt-3 text-center">
+                {{ include('order/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
