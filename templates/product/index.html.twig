@@ -8,36 +8,51 @@
 
     <div class="text-end mb-3">
         <a href="{{ path('app_product_new') }}" class="btn btn-success btn-lg">
-            <i class="bi bi-plus-circle"></i> Create New Product
+            <i class="bi bi-plus-circle"></i> Add New Product
         </a>
     </div>
 
     {% if products is empty %}
         <p class="text-center text-muted">No products found.</p>
     {% else %}
-        <div class="row g-4">
-            {% for product in products %}
-            <div class="col-md-4">
-                <div class="card p-3">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h5 class="card-title">{{ product.libelle }}</h5>
-                        <span class="badge bg-primary">${{ product.price }}</span>
-                    </div>
-                    <p><strong>Category:</strong> {{ product.category ? product.category.name : 'None' }}</p>
-                    <p><strong>Description:</strong> {{ product.description ?: 'No description' }}</p>
-                    <div class="d-flex justify-content-between mt-3">
-                        <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-info btn-sm">
-                            <i class="bi bi-eye"></i> View
-                        </a>
-                        <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil-square"></i> Edit
-                        </a>
-                        {{ include('product/_delete_form.html.twig') }}
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Libelle</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Orders</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.id }}</td>
+                        <td>{{ product.libelle }}</td>
+                        <td>{{ product.price }}</td>
+                        <td>{{ product.category ? product.category.name : '' }}</td>
+                        <td>
+                            {% if product.orders|length > 0 %}
+                                {% for order in product.orders %}
+                                    {{ order.user.firstName }} {{ order.user.lastName }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                No orders
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                            <form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}" style="display:inline-block;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                                <button class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% endif %}
 </div>
 {% endblock %}

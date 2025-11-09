@@ -10,24 +10,22 @@
 
     <div class="row g-3">
         <div class="col-md-6">
-            {{ form_label(form.orderUser, 'Order User') }}
-            {{ form_widget(form.orderUser, {'attr': {'class': 'form-select'}}) }}
-            {{ form_errors(form.orderUser) }}
+            {{ form_label(form.user) }}
+            {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.user) }}
         </div>
 
         <div class="col-md-6">
-            {{ form_label(form.totalPrice, 'Total Price') }}
-            {{ form_widget(form.totalPrice, {'attr': {'class': 'form-control', 'placeholder': 'Enter total price'}}) }}
-            {{ form_errors(form.totalPrice) }}
-        </div>
-
-        {% if form.products is defined %}
-        <div class="col-12">
-            {{ form_label(form.products, 'Products') }}
-            {{ form_widget(form.products, {'attr': {'class': 'form-select', 'multiple': 'multiple'}}) }}
+            {{ form_label(form.products) }}
+            {{ form_widget(form.products, {'attr': {'class': 'form-control'}}) }}
             {{ form_errors(form.products) }}
         </div>
-        {% endif %}
+
+        <div class="col-md-6">
+            {{ form_label(form.quantity) }}
+            {{ form_widget(form.quantity, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.quantity) }}
+        </div>
     </div>
 
     <div class="mt-4 text-center">

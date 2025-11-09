@@ -21,16 +21,19 @@
                 <div class="card p-3">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h5 class="card-title">Order #{{ order.id }}</h5>
-                        <span class="badge bg-primary">Total: ${{ order.totalPrice }}</span>
+                        <span class="badge bg-primary">User ID: {{ order.user.id }}</span>
                     </div>
-                    <p><strong>User:</strong> {{ order.orderUser.username }}</p>
-                    <p><strong>Products:</strong>
+                    <p><strong>User:</strong> {{ order.user.firstName }} {{ order.user.lastName }}</p>
+                    <p><strong>Products:</strong> 
                         {% if order.products|length > 0 %}
-                            {{ order.products|map(p => p.libelle)|join(', ') }}
+                            {% for product in order.products %}
+                                {{ product.libelle }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
                         {% else %}
                             None
                         {% endif %}
                     </p>
+                    <p><strong>Quantity:</strong> {{ order.quantity }}</p>
                     <div class="d-flex justify-content-between mt-3">
                         <a href="{{ path('app_order_show', {'id': order.id}) }}" class="btn btn-info btn-sm">
                             <i class="bi bi-eye"></i> View

@@ -1,4 +1,23 @@
+{# templates/user/_form.html.twig #}
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="row g-3">
+    <div class="col-md-6">
+        {{ form_label(form.username) }}
+        {{ form_widget(form.username, {'attr': {'class': 'form-control', 'placeholder': 'Enter username'}}) }}
+        {{ form_errors(form.username) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_label(form.email) }}
+        {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Enter email'}}) }}
+        {{ form_errors(form.email) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_label(form.password) }}
+        {{ form_widget(form.password, {'attr': {'class': 'form-control', 'placeholder': 'Enter password'}}) }}
+        {{ form_errors(form.password) }}
+    </div>
+</div>
+<div class="mt-4 text-center">
+    <button class="btn btn-primary btn-lg">{{ button_label|default('Save') }}</button>
+</div>
 {{ form_end(form) }}

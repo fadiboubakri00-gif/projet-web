@@ -17,26 +17,26 @@
     {% else %}
         <div class="row g-4">
             {% for user in users %}
-            <div class="col-md-4">
-                <div class="card p-3">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h5 class="card-title">{{ user.username }}</h5>
-                        <span class="badge bg-primary">ID: {{ user.id }}</span>
-                    </div>
-                    <p><strong>Email:</strong> {{ user.email }}</p>
-                    <p><strong>Carts:</strong> {{ user.carts|length }}</p>
-                    <p><strong>Orders:</strong> {{ user.orders|length }}</p>
-                    <div class="d-flex justify-content-between mt-3">
-                        <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-info btn-sm">
-                            <i class="bi bi-eye"></i> View
-                        </a>
-                        <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil-square"></i> Edit
-                        </a>
-                        {{ include('user/_delete_form.html.twig') }}
+                <div class="col-md-4">
+                    <div class="card p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title">{{ user.firstName }} {{ user.lastName }}</h5>
+                            <span class="badge bg-primary">ID: {{ user.id }}</span>
+                        </div>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Carts:</strong> {{ user.carts|length }}</p>
+                        <p><strong>Orders:</strong> {{ user.orders|length }}</p>
+                        <div class="d-flex justify-content-between mt-3">
+                            <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-info btn-sm">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                            {{ include('user/_delete_form.html.twig') }}
+                        </div>
                     </div>
                 </div>
-            </div>
             {% endfor %}
         </div>
     {% endif %}

@@ -7,45 +7,16 @@
     <h1 class="text-center mb-4">Create New Product</h1>
 
     {{ form_start(form) }}
-
     <div class="row g-3">
-        <div class="col-md-6">
-            {{ form_label(form.libelle, 'Product Name') }}
-            {{ form_widget(form.libelle, {'attr': {'class': 'form-control', 'placeholder': 'Enter product name'}}) }}
-            {{ form_errors(form.libelle) }}
-        </div>
-
-        <div class="col-md-6">
-            {{ form_label(form.price, 'Price') }}
-            {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': 'Enter product price'}}) }}
-            {{ form_errors(form.price) }}
-        </div>
-
-        <div class="col-12">
-            {{ form_label(form.description, 'Description') }}
-            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Enter product description'}}) }}
-            {{ form_errors(form.description) }}
-        </div>
-
-        <div class="col-md-6">
-            {{ form_label(form.category, 'Category') }}
-            {{ form_widget(form.category, {'attr': {'class': 'form-select'}}) }}
-            {{ form_errors(form.category) }}
-        </div>
-
-        {% if form.orders is defined %}
-        <div class="col-md-6">
-            {{ form_label(form.orders, 'Orders') }}
-            {{ form_widget(form.orders, {'attr': {'class': 'form-select', 'multiple': 'multiple'}}) }}
-            {{ form_errors(form.orders) }}
-        </div>
-        {% endif %}
+        <div class="col-md-6">{{ form_label(form.libelle) }} {{ form_widget(form.libelle) }} {{ form_errors(form.libelle) }}</div>
+        <div class="col-md-6">{{ form_label(form.price) }} {{ form_widget(form.price) }} {{ form_errors(form.price) }}</div>
+        <div class="col-md-6">{{ form_label(form.description) }} {{ form_widget(form.description) }} {{ form_errors(form.description) }}</div>
+        <div class="col-md-6">{{ form_label(form.category) }} {{ form_widget(form.category) }} {{ form_errors(form.category) }}</div>
     </div>
 
     <div class="mt-4 text-center">
         <button class="btn btn-primary btn-lg">Save Product</button>
     </div>
-
     {{ form_end(form) }}
 
     <div class="mt-3 text-center">

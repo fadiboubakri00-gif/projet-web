@@ -8,82 +8,49 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
-#[ORM\Table(name: '`order`')]
+#[ORM\Table(name: '`orders`')]
 class Order
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $orderUser = null;
+    private ?User $user = null;
 
-    /**
-     * @var Collection<int, Product>
-     */
     #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'orders')]
+    #[ORM\JoinTable(name: 'order_product')]
     private Collection $products;
 
     #[ORM\Column]
-    private ?float $totalPrice = null;
+    private ?int $quantity = null;
 
     public function __construct()
     {
         $this->products = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function getOrderUser(): ?User
-    {
-        return $this->orderUser;
-    }
+    public function getUser(): ?User { return $this->user; }
+    public function setUser(?User $user): static { $this->user = $user; return $this; }
 
-    public function setOrderUser(?User $orderUser): static
-    {
-        $this->orderUser = $orderUser;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Product>
-     */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
+    public function getProducts(): Collection { return $this->products; }
 
     public function addProduct(Product $product): static
     {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
         }
-
         return $this;
     }
 
     public function removeProduct(Product $product): static
     {
         $this->products->removeElement($product);
-
         return $this;
     }
 
-    public function getTotalPrice(): ?float
-    {
-        return $this->totalPrice;
-    }
-
-    public function setTotalPrice(float $totalPrice): static
-    {
-        $this->totalPrice = $totalPrice;
-
-        return $this;
-    }
+    public function getQuantity(): ?int { return $this->quantity; }
+    public function setQuantity(int $quantity): static { $this->quantity = $quantity; return $this; }
 }

@@ -10,24 +10,28 @@
 
     <div class="row g-3">
         <div class="col-md-6">
-            {{ form_label(form.owner, 'Owner') }}
-            {{ form_widget(form.owner, {'attr': {'class': 'form-select'}}) }}
-            {{ form_errors(form.owner) }}
+            {{ form_label(form.cardNumber) }}
+            {{ form_widget(form.cardNumber, {'attr': {'class': 'form-control', 'placeholder': 'Enter card number'}}) }}
+            {{ form_errors(form.cardNumber) }}
         </div>
 
         <div class="col-md-6">
-            {{ form_label(form.totalPrice, 'Total Price') }}
-            {{ form_widget(form.totalPrice, {'attr': {'class': 'form-control', 'placeholder': 'Enter total price'}}) }}
-            {{ form_errors(form.totalPrice) }}
+            {{ form_label(form.cardType) }}
+            {{ form_widget(form.cardType, {'attr': {'class': 'form-control', 'placeholder': 'Enter card type'}}) }}
+            {{ form_errors(form.cardType) }}
         </div>
 
-        {% if form.products is defined %}
-        <div class="col-12">
-            {{ form_label(form.products, 'Products') }}
-            {{ form_widget(form.products, {'attr': {'class': 'form-select', 'multiple': 'multiple'}}) }}
-            {{ form_errors(form.products) }}
+        <div class="col-md-6">
+            {{ form_label(form.expirationDate) }}
+            {{ form_widget(form.expirationDate, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.expirationDate) }}
         </div>
-        {% endif %}
+
+        <div class="col-md-6">
+            {{ form_label(form.user) }}
+            {{ form_widget(form.user, {'attr': {'class': 'form-select'}}) }}
+            {{ form_errors(form.user) }}
+        </div>
     </div>
 
     <div class="mt-4 text-center">

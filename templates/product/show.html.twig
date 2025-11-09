@@ -1,34 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Product{% endblock %}
+{% block title %}Show Product{% endblock %}
 
 {% block body %}
-    <h1>Product</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Product Details</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ product.id }}</td>
-            </tr>
-            <tr>
-                <th>Libelle</th>
-                <td>{{ product.libelle }}</td>
-            </tr>
-            <tr>
-                <th>Price</th>
-                <td>{{ product.price }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ product.description }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <p><strong>Libelle:</strong> {{ product.libelle }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Price:</strong> ${{ product.price }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Description:</strong> {{ product.description ?: 'N/A' }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Category:</strong> {{ product.category ? product.category.name : 'N/A' }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Orders:</strong> {{ product.orders|length }}</p>
+        </div>
+    </div>
 
-    <a href="{{ path('app_product_index') }}">back to list</a>
-
-    <a href="{{ path('app_product_edit', {'id': product.id}) }}">edit</a>
-
-    {{ include('product/_delete_form.html.twig') }}
+    <div class="mt-4 text-center">
+        <a href="{{ path('app_product_index') }}" class="btn btn-secondary">Back to list</a>
+    </div>
+</div>
 {% endblock %}

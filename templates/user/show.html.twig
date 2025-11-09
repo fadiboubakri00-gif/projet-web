@@ -1,34 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User{% endblock %}
+{% block title %}User Details{% endblock %}
 
 {% block body %}
-    <h1>User</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">User Details</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>
-            </tr>
-            <tr>
-                <th>Username</th>
-                <td>{{ user.username }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ user.password }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <p><strong>First Name:</strong> {{ user.firstName }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Last Name:</strong> {{ user.lastName }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Email:</strong> {{ user.email }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Carts:</strong> {{ user.carts|length }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Orders:</strong> {{ user.orders|length }}</p>
+        </div>
+    </div>
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
-
-    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
-
-    {{ include('user/_delete_form.html.twig') }}
+    <div class="mt-4 text-center">
+        <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning btn-lg">Edit User</a>
+        <a href="{{ path('app_user_index') }}" class="btn btn-secondary btn-lg">Back to list</a>
+    </div>
+</div>
 {% endblock %}

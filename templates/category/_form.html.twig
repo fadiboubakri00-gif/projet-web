@@ -1,4 +1,18 @@
+{# templates/category/_form.html.twig #}
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="row g-3">
+    <div class="col-md-6">
+        {{ form_label(form.name) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Enter category name'}}) }}
+        {{ form_errors(form.name) }}
+    </div>
+    <div class="col-md-12">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Enter description'}}) }}
+        {{ form_errors(form.description) }}
+    </div>
+</div>
+<div class="mt-4 text-center">
+    <button class="btn btn-primary btn-lg">{{ button_label|default('Save') }}</button>
+</div>
 {{ form_end(form) }}

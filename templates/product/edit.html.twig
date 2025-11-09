@@ -3,11 +3,24 @@
 {% block title %}Edit Product{% endblock %}
 
 {% block body %}
-    <h1>Edit Product</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Edit Product</h1>
 
-    {{ include('product/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ form_start(form) }}
+    <div class="row g-3">
+        <div class="col-md-6">{{ form_label(form.libelle) }} {{ form_widget(form.libelle) }} {{ form_errors(form.libelle) }}</div>
+        <div class="col-md-6">{{ form_label(form.price) }} {{ form_widget(form.price) }} {{ form_errors(form.price) }}</div>
+        <div class="col-md-6">{{ form_label(form.description) }} {{ form_widget(form.description) }} {{ form_errors(form.description) }}</div>
+        <div class="col-md-6">{{ form_label(form.category) }} {{ form_widget(form.category) }} {{ form_errors(form.category) }}</div>
+    </div>
 
-    <a href="{{ path('app_product_index') }}">back to list</a>
+    <div class="mt-4 text-center">
+        <button class="btn btn-warning btn-lg">Update Product</button>
+    </div>
+    {{ form_end(form) }}
 
-    {{ include('product/_delete_form.html.twig') }}
+    <div class="mt-3 text-center">
+        <a href="{{ path('app_product_index') }}" class="btn btn-secondary">Back to list</a>
+    </div>
+</div>
 {% endblock %}

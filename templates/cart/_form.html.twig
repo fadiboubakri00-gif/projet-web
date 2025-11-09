@@ -1,4 +1,23 @@
+{# templates/cart/_form.html.twig #}
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="row g-3">
+    <div class="col-md-6">
+        {{ form_label(form.totalPrice) }}
+        {{ form_widget(form.totalPrice, {'attr': {'class': 'form-control', 'placeholder': 'Enter total price'}}) }}
+        {{ form_errors(form.totalPrice) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_label(form.owner) }}
+        {{ form_widget(form.owner, {'attr': {'class': 'form-select'}}) }}
+        {{ form_errors(form.owner) }}
+    </div>
+    <div class="col-md-12">
+        {{ form_label(form.products) }}
+        {{ form_widget(form.products, {'attr': {'class': 'form-select', 'multiple': 'multiple'}}) }}
+        {{ form_errors(form.products) }}
+    </div>
+</div>
+<div class="mt-4 text-center">
+    <button class="btn btn-primary btn-lg">{{ button_label|default('Save') }}</button>
+</div>
 {{ form_end(form) }}

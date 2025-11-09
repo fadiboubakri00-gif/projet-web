@@ -10,79 +10,53 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CartRepository::class)]
 class Cart
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 20)]
+    private ?string $cardNumber = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $cardType = null;
+
+    #[ORM\Column(type: 'date')]
+    private ?\DateTimeInterface $expirationDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'carts')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner = null;
+    private ?User $user = null;
 
-    /**
-     * @var Collection<int, Product>
-     */
-    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'carts')]
-    private Collection $products;
+    #[ORM\OneToMany(mappedBy: 'cart', targetEntity: Order::class)]
+    private Collection $orders;
 
-    #[ORM\Column]
-    private ?float $totalPrice = null;
+    public function __construct() { $this->orders = new ArrayCollection(); }
 
-    public function __construct()
-    {
-        $this->products = new ArrayCollection();
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function getCardNumber(): ?string { return $this->cardNumber; }
+    public function setCardNumber(string $cardNumber): static { $this->cardNumber = $cardNumber; return $this; }
 
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
+    public function getCardType(): ?string { return $this->cardType; }
+    public function setCardType(string $cardType): static { $this->cardType = $cardType; return $this; }
 
-    public function setOwner(?User $owner): static
-    {
-        $this->owner = $owner;
+    public function getExpirationDate(): ?\DateTimeInterface { return $this->expirationDate; }
+    public function setExpirationDate(\DateTimeInterface $expirationDate): static { $this->expirationDate = $expirationDate; return $this; }
 
-        return $this;
-    }
+    public function getUser(): ?User { return $this->user; }
+    public function setUser(?User $user): static { $this->user = $user; return $this; }
 
-    /**
-     * @return Collection<int, Product>
-     */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    public function addProduct(Product $product): static
-    {
-        if (!$this->products->contains($product)) {
-            $this->products->add($product);
+    public function getOrders(): Collection { return $this->orders; }
+    public function addOrder(Order $order): static {
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+            $order->setCart($this);
         }
-
         return $this;
     }
-
-    public function removeProduct(Product $product): static
-    {
-        $this->products->removeElement($product);
-
-        return $this;
-    }
-
-    public function getTotalPrice(): ?float
-    {
-        return $this->totalPrice;
-    }
-
-    public function setTotalPrice(float $totalPrice): static
-    {
-        $this->totalPrice = $totalPrice;
-
+    public function removeOrder(Order $order): static {
+        if ($this->orders->removeElement($order) && $order->getCart() === $this) {
+            $order->setCart(null);
+        }
         return $this;
     }
 }

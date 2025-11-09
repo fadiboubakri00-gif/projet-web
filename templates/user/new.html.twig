@@ -7,22 +7,27 @@
     <h1 class="text-center mb-4">Create New User</h1>
 
     {{ form_start(form) }}
-
     <div class="row g-3">
         <div class="col-md-6">
-            {{ form_label(form.username, 'Username') }}
-            {{ form_widget(form.username, {'attr': {'class': 'form-control', 'placeholder': 'Enter username'}}) }}
-            {{ form_errors(form.username) }}
+            {{ form_label(form.firstName) }}
+            {{ form_widget(form.firstName, {'attr': {'class': 'form-control', 'placeholder': 'Enter first name'}}) }}
+            {{ form_errors(form.firstName) }}
         </div>
 
         <div class="col-md-6">
-            {{ form_label(form.email, 'Email') }}
+            {{ form_label(form.lastName) }}
+            {{ form_widget(form.lastName, {'attr': {'class': 'form-control', 'placeholder': 'Enter last name'}}) }}
+            {{ form_errors(form.lastName) }}
+        </div>
+
+        <div class="col-md-6">
+            {{ form_label(form.email) }}
             {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Enter email'}}) }}
             {{ form_errors(form.email) }}
         </div>
 
         <div class="col-md-6">
-            {{ form_label(form.password, 'Password') }}
+            {{ form_label(form.password) }}
             {{ form_widget(form.password, {'attr': {'class': 'form-control', 'placeholder': 'Enter password'}}) }}
             {{ form_errors(form.password) }}
         </div>
