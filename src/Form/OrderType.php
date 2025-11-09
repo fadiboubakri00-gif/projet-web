@@ -15,21 +15,17 @@ class OrderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('totalPrice')
             ->add('orderUser', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'id', 
+                'choice_label' => 'username',
             ])
             ->add('products', EntityType::class, [
-    'class' => Product::class,
-    'choice_label' => function (Product $product) {
-        return  $product->getLibelle() . ' - $' . $product->getPrice();
-    },
-    'multiple' => true,
-    'required' => true,    
-    'expanded' => true,      
-      
-])
+                'class' => Product::class,
+                'choice_label' => 'libelle',
+                'multiple' => true,
+                'expanded' => true,
+                'required' => true,
+            ])
         ;
     }
 

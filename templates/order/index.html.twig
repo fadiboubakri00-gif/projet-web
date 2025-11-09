@@ -21,7 +21,7 @@
                 <div class="card p-3">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h5 class="card-title">Order #{{ order.id }}</h5>
-                        <span class="badge bg-primary">Total: ${{ order.totalPrice }}</span>
+                        <span class="badge bg-primary">Total: ${{ order.getTotal() }}</span>
                     </div>
                     <p><strong>User:</strong> {{ order.orderUser.username }}</p>
                     <p><strong>Products:</strong>

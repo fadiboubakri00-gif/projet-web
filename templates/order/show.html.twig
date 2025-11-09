@@ -1,51 +1,100 @@
-{% extends 'base.html.twig' %}
+<?php
 
-{% block title %}Order Details{% endblock %}
+namespace App\Entity;
 
-{% block body %}
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Order Details</h1>
+use App\Repository\OrderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
-    <table class="table table-striped">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ order.id }}</td>
-            </tr>
-            <tr>
-                <th>Order User</th>
-                <td>{{ order.orderUser.username }}</td>
-            </tr>
-            <tr>
-                <th>Products</th>
-                <td>
-                    {% if order.products|length > 0 %}
-                        <ul class="list-unstyled">
-                            {% for product in order.products %}
-                                <li>{{ product.libelle }} - ${{ product.price }}</li>
-                            {% endfor %}
-                        </ul>
-                        <strong>Total: ${{ order.getTotal() }}</strong>
-                    {% else %}
-                        No products in this order
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Order Date</th>
-                <td>{{ order.orderDate ? order.orderDate|date('Y-m-d H:i:s') : 'Not set' }}</td>
-            </tr>
-        </tbody>
-    </table>
+#[ORM\Entity(repositoryClass: OrderRepository::class)]
+#[ORM\Table(name: '`order`')]
+class Order
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    <div class="mt-4 text-center">
-        <a href="{{ path('app_order_index') }}" class="btn btn-secondary me-2">
-            <i class="bi bi-arrow-left"></i> Back to list
-        </a>
-        <a href="{{ path('app_order_edit', {'id': order.id}) }}" class="btn btn-primary me-2">
-            <i class="bi bi-pencil"></i> Edit
-        </a>
-        {{ include('order/_delete_form.html.twig') }}
-    </div>
-</div>
-{% endblock %}
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $orderUser = null;
+
+    /**
+     * @var Collection<int, Product>
+     */
+    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'orders')]
+    #[ORM\JoinTable(name: 'order_products')]
+    private Collection $products;
+
+
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+        
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getOrderUser(): ?User
+    {
+        return $this->orderUser;
+    }
+
+    public function setOrderUser(?User $orderUser): static
+    {
+        $this->orderUser = $orderUser;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): static
+    {
+        $this->products->removeElement($product);
+
+        return $this;
+    }
+
+    
+
+    /**
+     * Calculate total automatically from products
+     */
+    public function getTotal(): float
+    {
+        $total = 0.0;
+        foreach ($this->products as $product) {
+            $total += $product->getPrice();
+        }
+        return $total;
+    }
+
+    /**
+     * Get number of items in order
+     */
+    public function getItemsCount(): int
+    {
+        return $this->products->count();
+    }
+}

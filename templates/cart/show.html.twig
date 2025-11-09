@@ -17,9 +17,13 @@
                 <td>{{ cart.owner.username }}</td>
             </tr>
             <tr>
-                <th>Total Price</th>
-                <td>${{ cart.totalPrice }}</td>
-            </tr>
+    <th>Total Price</th>
+    <td>${{ cart.getTotalPrice() }}</td>
+</tr>
+<tr>
+    <th>Number of Items</th>
+    <td>{{ cart.getItemsCount() }}</td>
+</tr>
             <tr>
                 <th>Products</th>
                 <td>

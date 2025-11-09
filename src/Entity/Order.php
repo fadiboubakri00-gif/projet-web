@@ -24,14 +24,15 @@ class Order
      * @var Collection<int, Product>
      */
     #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'orders')]
+    #[ORM\JoinTable(name: 'order_product')]
     private Collection $products;
 
-    #[ORM\Column]
-    private ?float $totalPrice = null;
+
 
     public function __construct()
     {
         $this->products = new ArrayCollection();
+        
     }
 
     public function getId(): ?int
@@ -75,15 +76,25 @@ class Order
         return $this;
     }
 
-    public function getTotalPrice(): ?float
+    
+
+    /**
+     * Calculate total automatically from products
+     */
+    public function getTotal(): float
     {
-        return $this->totalPrice;
+        $total = 0.0;
+        foreach ($this->products as $product) {
+            $total += $product->getPrice();
+        }
+        return $total;
     }
 
-    public function setTotalPrice(float $totalPrice): static
+    /**
+     * Get number of items in order
+     */
+    public function getItemsCount(): int
     {
-        $this->totalPrice = $totalPrice;
-
-        return $this;
+        return $this->products->count();
     }
 }

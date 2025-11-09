@@ -15,7 +15,7 @@ class Cart
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'cart', targetEntity: User::class)]
+    #[ORM\ManyToOne(inversedBy: 'carts')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
@@ -23,15 +23,16 @@ class Cart
      * @var Collection<int, Product>
      */
     #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'carts')]
+    #[ORM\JoinTable(name: 'cart_products')]
     private Collection $products;
 
-    #[ORM\Column]
-    private ?float $totalPrice = null;
+    // Remove the totalPrice column since we'll calculate it automatically
+    // #[ORM\Column]
+    // private ?float $totalPrice = null;
 
     public function __construct()
     {
         $this->products = new ArrayCollection();
-        $this->totalPrice = 0.0;
     }
 
     public function getId(): ?int
@@ -75,26 +76,23 @@ class Cart
         return $this;
     }
 
-    public function getTotalPrice(): ?float
-    {
-        return $this->totalPrice;
-    }
-
-    public function setTotalPrice(float $totalPrice): static
-    {
-        $this->totalPrice = $totalPrice;
-
-        return $this;
-    }
-
-    
-    public function calculateTotalPrice(): float
+    /**
+     * Calculate total price automatically from products
+     */
+    public function getTotalPrice(): float
     {
         $total = 0.0;
         foreach ($this->products as $product) {
             $total += $product->getPrice();
         }
-        $this->totalPrice = $total;
         return $total;
+    }
+
+    /**
+     * Get number of items in cart
+     */
+    public function getItemsCount(): int
+    {
+        return $this->products->count();
     }
 }

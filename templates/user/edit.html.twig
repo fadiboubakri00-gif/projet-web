@@ -7,19 +7,19 @@
     <h1 class="text-center mb-4">Edit User</h1>
 
     <div class="d-flex justify-content-center">
-        <div class="col-md-3">
+        <div class="col-md-8">
             {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
-
-            <div class="mt-4 text-center">
-                <a href="{{ path('app_user_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to list
-                </a>
-            </div>
-
-            <div class="mt-3 text-center">
-                {{ include('user/_delete_form.html.twig') }}
-            </div>
         </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{{ path('app_user_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to list
+        </a>
+    </div>
+
+    <div class="mt-3 text-center">
+        {{ include('user/_delete_form.html.twig') }}
     </div>
 </div>
 {% endblock %}

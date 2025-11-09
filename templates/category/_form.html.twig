@@ -1,4 +1,19 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="mb-4">
+    {{ form_label(form.name, 'Category Name', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+    {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Enter category name'}}) }}
+    {{ form_errors(form.name) }}
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Enter category description'}}) }}
+    {{ form_errors(form.description) }}
+</div>
+
+<div class="text-center">
+    <button class="btn btn-primary btn-lg">
+        <i class="bi bi-check-circle"></i> {{ button_label|default('Update') }}
+    </button>
+</div>
 {{ form_end(form) }}
