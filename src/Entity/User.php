@@ -37,9 +37,7 @@ class User
     public function __construct()
     {
         $this->orders = new ArrayCollection();
-        // Automatically create a cart for the user when the user is created
-        $this->cart = new Cart();
-        $this->cart->setOwner($this);
+        
     }
 
     public function getId(): ?int
@@ -85,17 +83,20 @@ class User
         return $this->cart;
     }
 
-    public function setCart(Cart $cart): static
-    {
+    public function setCart(?Cart $cart): static
+{
+    // Only set if cart is provided
+    if ($cart !== null) {
         // set the owning side of the relation if necessary
         if ($cart->getOwner() !== $this) {
             $cart->setOwner($this);
         }
-
-        $this->cart = $cart;
-
-        return $this;
     }
+
+    $this->cart = $cart;
+
+    return $this;
+}
 
     /**
      * @return Collection<int, Order>

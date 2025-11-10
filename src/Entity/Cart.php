@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CartRepository::class)]
+#[ORM\Table(name: 'cart')]
+#[ORM\UniqueConstraint(name: 'UNIQ_OWNER', columns: ['owner_id'])]
 class Cart
 {
     #[ORM\Id]
@@ -15,8 +17,8 @@ class Cart
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'carts')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\OneToOne(inversedBy: 'cart', targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $owner = null;
 
     /**
@@ -25,8 +27,6 @@ class Cart
     #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'carts')]
     #[ORM\JoinTable(name: 'cart_product')]
     private Collection $products;
-
-    
 
     public function __construct()
     {

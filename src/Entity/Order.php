@@ -17,7 +17,7 @@ class Order
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
-    #[ORM\JoinColumn(nullable: false)]
+   #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $orderUser = null;
 
     /**

@@ -23,25 +23,47 @@ final class CartController extends AbstractController
     }
 
     #[Route('/new', name: 'app_cart_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $cart = new Cart();
-        $form = $this->createForm(CartType::class, $cart);
-        $form->handleRequest($request);
+public function new(Request $request, EntityManagerInterface $entityManager, CartRepository $cartRepository): Response
+{
+    $cart = new Cart();
+    $form = $this->createForm(CartType::class, $cart);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($cart);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_cart_index', [], Response::HTTP_SEE_OTHER);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $user = $cart->getOwner();
+        
+        // Double check if user already has a cart (in case form was manipulated)
+        $existingCart = $cartRepository->findOneBy(['owner' => $user]);
+        
+        if ($existingCart) {
+            $this->addFlash('error', 'This user already has a cart. Each user can only have one cart.');
+            return $this->render('cart/new.html.twig', [
+                'cart' => $cart,
+                'form' => $form,
+            ]);
         }
 
-        return $this->render('cart/new.html.twig', [
-            'cart' => $cart,
-            'form' => $form,
-        ]);
+        try {
+            $entityManager->persist($cart);
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'Cart created successfully.');
+            return $this->redirectToRoute('app_cart_index', [], Response::HTTP_SEE_OTHER);
+            
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'This user already has a cart. Each user can only have one cart.');
+            return $this->render('cart/new.html.twig', [
+                'cart' => $cart,
+                'form' => $form,
+            ]);
+        }
     }
 
+    return $this->render('cart/new.html.twig', [
+        'cart' => $cart,
+        'form' => $form,
+    ]);
+}
     #[Route('/{id}', name: 'app_cart_show', methods: ['GET'])]
     public function show(Cart $cart): Response
     {
@@ -51,22 +73,43 @@ final class CartController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_cart_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Cart $cart, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(CartType::class, $cart);
-        $form->handleRequest($request);
+public function edit(Request $request, Cart $cart, EntityManagerInterface $entityManager, CartRepository $cartRepository): Response
+{
+    $form = $this->createForm(CartType::class, $cart);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_cart_index', [], Response::HTTP_SEE_OTHER);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $user = $cart->getOwner();
+        
+        // Check if changing to a user who already has a different cart
+        $existingCart = $cartRepository->findOneBy(['owner' => $user]);
+        
+        if ($existingCart && $existingCart->getId() !== $cart->getId()) {
+            $this->addFlash('error', 'This user already has a cart. Each user can only have one cart.');
+            return $this->render('cart/edit.html.twig', [
+                'cart' => $cart,
+                'form' => $form,
+            ]);
         }
 
-        return $this->render('cart/edit.html.twig', [
-            'cart' => $cart,
-            'form' => $form,
-        ]);
+        try {
+            $entityManager->flush();
+            $this->addFlash('success', 'Cart updated successfully.');
+            return $this->redirectToRoute('app_cart_index', [], Response::HTTP_SEE_OTHER);
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Error updating cart. Please try again.');
+            return $this->render('cart/edit.html.twig', [
+                'cart' => $cart,
+                'form' => $form,
+            ]);
+        }
     }
+
+    return $this->render('cart/edit.html.twig', [
+        'cart' => $cart,
+        'form' => $form,
+    ]);
+}
 
     #[Route('/{id}', name: 'app_cart_delete', methods: ['POST'])]
     public function delete(Request $request, Cart $cart, EntityManagerInterface $entityManager): Response
