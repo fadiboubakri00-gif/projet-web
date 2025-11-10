@@ -6,38 +6,16 @@
 <div class="container mt-5">
     <h1 class="text-center mb-4">Create New Order</h1>
 
-    {{ form_start(form) }}
-
-    <div class="row g-3">
-        <div class="col-md-6">
-            {{ form_label(form.orderUser, 'Order User') }}
-            {{ form_widget(form.orderUser, {'attr': {'class': 'form-select'}}) }}
-            {{ form_errors(form.orderUser) }}
+    <div class="card shadow">
+        <div class="card-body">
+            {{ include('order/_form.html.twig', {'button_label': 'Save Order'}) }}
         </div>
-
-        <div class="col-md-6">
-            {{ form_label(form.totalPrice, 'Total Price') }}
-            {{ form_widget(form.totalPrice, {'attr': {'class': 'form-control', 'placeholder': 'Enter total price'}}) }}
-            {{ form_errors(form.totalPrice) }}
-        </div>
-
-        {% if form.products is defined %}
-        <div class="col-12">
-            {{ form_label(form.products, 'Products') }}
-            {{ form_widget(form.products, {'attr': {'class': 'form-select', 'multiple': 'multiple'}}) }}
-            {{ form_errors(form.products) }}
-        </div>
-        {% endif %}
     </div>
 
     <div class="mt-4 text-center">
-        <button class="btn btn-primary btn-lg">Save Order</button>
-    </div>
-
-    {{ form_end(form) }}
-
-    <div class="mt-3 text-center">
-        <a href="{{ path('app_order_index') }}" class="btn btn-secondary">Back to list</a>
+        <a href="{{ path('app_order_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to list
+        </a>
     </div>
 </div>
 {% endblock %}
