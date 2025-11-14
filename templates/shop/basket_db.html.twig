@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Basket{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4 text-center" style="color:#00d2ff;">🧺 Your Basket</h1>
+
+    {% for label, messages in app.flashes %}
+        {% for msg in messages %}
+            <div class="alert alert-{{ label == 'danger' ? 'danger' : (label == 'warning' ? 'warning' : 'success') }}">
+                {{ msg }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% if items is empty %}
+        <div class="text-center py-5">
+            <p>Your basket is empty.</p>
+            <a href="{{ path('app_shop_home') }}" class="btn btn-info">Back to shop</a>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-md-8">
+                <ul class="list-group mb-3">
+                    {% for it in items %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1">{{ it.product.libelle }}</h5>
+                                <small class="text-muted">{{ it.product.description|default('')|slice(0,80) }}{% if it.product.description|length > 80 %}...{% endif %}</small>
+                            </div>
+
+                            <div class="text-end">
+                                <div class="mb-2">Qty: <strong>{{ it.qty }}</strong></div>
+                                <div>Price: <strong>{{ it.product.price }} TND</strong></div>
+                                <div>Subtotal: <strong>{{ it.subtotal }} TND</strong></div>
+
+                                <form method="post" action="{{ path('front_cart_remove', {'id': it.product.id}) }}" class="mt-2">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('basket_remove' ~ it.product.id) }}">
+                                    <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h5>Order summary</h5>
+                    <p class="mt-3">Total: <strong>{{ total }} TND</strong></p>
+
+                    <form method="post" action="{{ path('front_cart_checkout') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('basket_checkout') }}">
+                        <button class="btn btn-primary w-100">Finalize & Create Order</button>
+                    </form>
+
+                    <form method="post" action="{{ path('front_cart_clear') }}" class="mt-2">
+                        <input type="hidden" name="_token" value="{{ csrf_token('basket_clear') }}">
+                        <button class="btn btn-outline-secondary w-100">Clear basket</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<div class="container mt-5" style="max-width:480px;">
+    <h2 class="mb-4 text-center" style="color:#00d2ff;">Create an account</h2>
+
+    {% for label, messages in app.flashes %}
+        {% for msg in messages %}
+            <div class="alert alert-{{ label == 'danger' ? 'danger' : (label == 'warning' ? 'warning' : 'success') }}">
+                {{ msg }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <form method="post" action="{{ path('app_user_register') }}">
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" name="username" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+
+        <button class="btn btn-primary w-100">Register</button>
+    </form>
+
+    <div class="mt-3 text-center">
+        <a href="{{ path('app_user_login') }}">Already have an account? Login</a>
+    </div>
+</div>
+{% endblock %}

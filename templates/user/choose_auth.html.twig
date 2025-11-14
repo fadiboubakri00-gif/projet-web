@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login or Register{% endblock %}
+
+{% block body %}
+<div class="container mt-5" style="max-width:800px;">
+    <h1 class="text-center mb-4" style="color:#00d2ff;">Please login or register</h1>
+
+    {% for label, messages in app.flashes %}
+        {% for msg in messages %}
+            <div class="alert alert-{{ label == 'danger' ? 'danger' : (label == 'warning' ? 'warning' : 'info') }}">
+                {{ msg }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="row gx-4">
+        <div class="col-md-6 text-center">
+            <div class="card p-4 shadow-sm">
+                <h3>Already have an account?</h3>
+                <p>Login to keep your cart and checkout faster.</p>
+                <a href="{{ path('app_user_login') }}" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 text-center">
+            <div class="card p-4 shadow-sm">
+                <h3>New here?</h3>
+                <p>Create an account to save orders and view history.</p>
+                <a href="{{ path('app_user_register') }}" class="btn btn-outline-primary">Register</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ path('app_shop_home') }}" class="btn btn-link">Back to shop</a>
+    </div>
+</div>
+{% endblock %}
