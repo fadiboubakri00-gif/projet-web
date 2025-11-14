@@ -1,5 +1,12 @@
+# config/routes.yaml
+app_login:
+    path: /
+    controller: App\Controller\AdminSecurityController::login
+
+app_logout:
+    path: /logout
+    controller: App\Controller\AdminSecurityController::logout
+
 controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
+    resource: ../src/Controller/
     type: attribute
