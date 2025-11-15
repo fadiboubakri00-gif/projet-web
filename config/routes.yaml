@@ -1,4 +1,6 @@
 # config/routes.yaml
+
+# ------------------ ADMIN ROUTES ------------------
 app_login:
     path: /
     controller: App\Controller\AdminSecurityController::login
@@ -7,6 +9,24 @@ app_logout:
     path: /logout
     controller: App\Controller\AdminSecurityController::logout
 
+# ------------------ SHOP USER ROUTES ------------------
+app_user_login:
+    path: /shop/login
+    controller: App\Controller\SecurityController::login
+
+app_user_logout:
+    path: /shop/logout
+    controller: App\Controller\SecurityController::logout
+
+app_register:
+    path: /shop/register
+    controller: App\Controller\RegistrationController::register
+
+app_shop_home:
+    path: /shop
+    controller: App\Controller\ShopController::index
+
+# ------------------ AUTO LOAD CONTROLLERS ------------------
 controllers:
     resource: ../src/Controller/
     type: attribute

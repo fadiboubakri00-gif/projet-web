@@ -1,49 +1,69 @@
-{# templates/shop/index.html.twig - simplified, no login links #}
+{# templates/shop/index.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Darbouka Shop{% endblock %}
 
 {% block body %}
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top" style="background:#0a0a0a;">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="{{ path('app_home') }}">🧭 Darbouka Shop</a>
+        <a class="navbar-brand fw-bold" href="{{ path('app_shop_home') }}">🧭 Darbouka Shop</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-center">
+                {% if app.user %}
+                    <li class="nav-item me-3 text-white">
+                        👋 Hello, <strong>{{ app.user.username }}</strong>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('app_user_logout') }}" class="btn btn-outline-danger rounded-pill px-3">
+                            Logout
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item me-2">
+                        <a href="{{ path('app_user_login') }}" class="btn btn-primary rounded-pill px-3">
+                            Sign In
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('app_register') }}" class="btn btn-outline-light rounded-pill px-3">
+                            Register
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
 </nav>
-<div class="container mt-5">
+
+<div class="container mt-5 pt-5">
     <h1 class="text-center mb-5" style="color:#00d2ff;">
         🎵 Welcome to Darbouka Shop
     </h1>
 
-    {# Simple top-right place for account/cart without calling routes #}
-    <div class="text-end mb-4">
-        <span class="me-2">🛍️ Shop</span>
-        <span class="me-2">|</span>
-        <span class="me-2">Cart (0)</span>
-    </div>
-
     <div class="row">
         {% for product in products %}
             <div class="col-md-4 mb-4">
-                <div class="card h-100 text-center shadow-sm">
-                    <div class="card-body">
-                        <i class="bi bi-box-seam entity-icon mb-3"></i>
+                <div class="card h-100 text-center shadow-sm border-0 rounded-3">
+                    <div class="card-body d-flex flex-column">
+                        <i class="bi bi-box-seam entity-icon mb-3" style="font-size:2rem;"></i>
                         <h5 class="card-title">{{ product.libelle }}</h5>
-
-                        <p class="card-text">
+                        <p class="card-text flex-grow-1">
                             {{ product.description|default('No description available')|length > 100 
                                 ? product.description|slice(0, 100) ~ '...' 
                                 : product.description }}
                         </p>
-
-                        <h4 class="text-info">{{ product.price }} TND</h4>
+                        <h4 class="text-info mb-3">{{ product.price }} TND</h4>
+                        <form method="post" action="{{ path('front_cart_add', {'id': product.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('basket_add' ~ product.id) }}">
+                            <button class="btn btn-info w-100 rounded-pill">
+                                Add to Cart <i class="bi bi-cart-plus"></i>
+                            </button>
+                        </form>
                     </div>
-                    <form method="post" action="{{ path('front_cart_add', {'id': product.id}) }}">
-                        <input type="hidden" name="_token" value="{{ csrf_token('basket_add' ~ product.id) }}">
-                        <button class="btn btn-info w-100">Add to Cart <i class="bi bi-cart-plus"></i></button>
-                    </form>
                 </div>
             </div>
         {% else %}

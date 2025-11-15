@@ -1,13 +1,22 @@
+# config/packages/security.yaml
 security:
     password_hashers:
         App\Entity\Admin:
             algorithm: auto
+        App\Entity\User:
+            algorithm: auto
 
     providers:
-        # Load users from the Admin entity
-        app_user_provider:
+        # Admin users
+        app_admin_provider:
             entity:
                 class: App\Entity\Admin
+                property: email
+
+        # Shop users
+        app_user_provider:
+            entity:
+                class: App\Entity\User
                 property: email
 
     firewalls:
@@ -15,9 +24,26 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        # ------------------ SHOP USER FIREWALL ------------------
         main:
-            lazy: true
+            pattern: ^/shop
             provider: app_user_provider
+            lazy: true
+            custom_authenticator: App\Security\UserAuthenticator
+            logout:
+                path: app_user_logout
+                target: /shop
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /shop
+            entry_point: App\Security\UserAuthenticator
+
+        # ------------------ ADMIN FIREWALL ------------------
+        admin:
+            pattern: ^/
+            provider: app_admin_provider
+            lazy: true
             custom_authenticator: App\Security\AdminAuthenticator
             logout:
                 path: app_logout
@@ -28,14 +54,13 @@ security:
                 path: /
 
     access_control:
-        # Protect the dashboard
+        # Admin routes
         - { path: ^/dashboard, roles: ROLE_ADMIN }
-        # Optionally, protect other admin routes
-        - { path: ^/cart, roles: ROLE_ADMIN }
         - { path: ^/product, roles: ROLE_ADMIN }
         - { path: ^/category, roles: ROLE_ADMIN }
         - { path: ^/order, roles: ROLE_ADMIN }
         - { path: ^/user, roles: ROLE_ADMIN }
-        
 
-
+        # Shop user protected routes
+        - { path: ^/shop/cart, roles: ROLE_USER }
+        - { path: ^/shop/checkout, roles: ROLE_USER }
