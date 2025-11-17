@@ -25,6 +25,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $isVerified = false;  // <-- Add this property
+
     #[ORM\OneToOne(mappedBy: 'owner', targetEntity: Cart::class, cascade: ['persist', 'remove'])]
     private ?Cart $cart = null;
 
@@ -34,8 +37,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+        $this->isVerified = false; // default
     }
 
+    // ------------------- Getters/Setters -------------------
     public function getId(): ?int { return $this->id; }
     public function getUsername(): ?string { return $this->username; }
     public function setUsername(string $username): static { $this->username = $username; return $this; }
@@ -64,8 +69,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     // ---------------- Security ----------------
-
     public function getRoles(): array { return ['ROLE_USER']; }
     public function getUserIdentifier(): string { return (string)$this->email; }
     public function eraseCredentials(): void {}
+
+    // ---------------- Email Verification ----------------
+    public function isVerified(): bool { return $this->isVerified; }
+    public function setIsVerified(bool $verified): static { $this->isVerified = $verified; return $this; }
 }
