@@ -54,11 +54,6 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('basket_checkout') }}">
                         <button class="btn btn-primary w-100">Finalize & Create Order</button>
                     </form>
-
-                    <form method="post" action="{{ path('front_cart_clear') }}" class="mt-2">
-                        <input type="hidden" name="_token" value="{{ csrf_token('basket_clear') }}">
-                        <button class="btn btn-outline-secondary w-100">Clear basket</button>
-                    </form>
                 </div>
             </div>
         </div>

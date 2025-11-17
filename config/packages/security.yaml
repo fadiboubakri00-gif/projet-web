@@ -7,13 +7,10 @@ security:
             algorithm: auto
 
     providers:
-        # Admin users
         app_admin_provider:
             entity:
                 class: App\Entity\Admin
                 property: email
-
-        # Shop users
         app_user_provider:
             entity:
                 class: App\Entity\User
@@ -24,9 +21,9 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        # ------------------ SHOP USER FIREWALL ------------------
         main:
-            pattern: ^/shop
+            # FIX: include /basket routes in the same firewall
+            pattern: ^/(shop|basket)
             provider: app_user_provider
             lazy: true
             custom_authenticator: App\Security\UserAuthenticator
@@ -39,7 +36,6 @@ security:
                 path: /shop
             entry_point: App\Security\UserAuthenticator
 
-        # ------------------ ADMIN FIREWALL ------------------
         admin:
             pattern: ^/
             provider: app_admin_provider
@@ -54,7 +50,6 @@ security:
                 path: /
 
     access_control:
-        # Admin routes
         - { path: ^/dashboard, roles: ROLE_ADMIN }
         - { path: ^/product, roles: ROLE_ADMIN }
         - { path: ^/category, roles: ROLE_ADMIN }

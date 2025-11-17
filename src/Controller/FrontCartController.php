@@ -24,7 +24,7 @@ class FrontCartController extends AbstractController
     }
 
     /**
-     * Show current basket (DB-backed, cart id stored in session under 'db_cart_id')
+     * Show basket
      */
     #[Route('/basket', name: 'front_cart_index', methods: ['GET'])]
     public function index(Request $request): Response
@@ -39,13 +39,12 @@ class FrontCartController extends AbstractController
             $cart = $this->em->getRepository(Cart::class)->find($cartId);
             if ($cart) {
                 foreach ($cart->getProducts() as $p) {
-                    $qty = 1; // placeholder: adapt when adding quantity support
+                    $qty = 1; // placeholder for quantity
                     $subtotal = $p->getPrice() * $qty;
                     $items[] = ['product' => $p, 'qty' => $qty, 'subtotal' => $subtotal];
                     $total += $subtotal;
                 }
             } else {
-                // invalid cart id -> forget it
                 $session->remove('db_cart_id');
             }
         }
@@ -58,26 +57,24 @@ class FrontCartController extends AbstractController
     }
 
     /**
-     * Add a product to cart.
-     * If current user is not an App\Entity\User, save intended action and redirect to choose-auth.
+     * Add product to basket
      */
     #[Route('/basket/add/{id}', name: 'front_cart_add', methods: ['POST'])]
     public function add(int $id, Request $request): RedirectResponse
     {
-        // CSRF check
         if (!$this->isCsrfTokenValid('basket_add'.$id, $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token.');
             return $this->redirectToRoute('app_shop_home');
         }
 
-        // If not a front user, require login/register
         $user = $this->getUser();
+
+        // Redirect non-shop users to login
         if (!($user instanceof \App\Entity\User)) {
             $request->getSession()->set('intended_add_id', $id);
-            // optional: store return route name
             $request->getSession()->set('intended_return_route', 'front_cart_resume_add');
             $this->addFlash('info', 'Please login or register to add items to your cart.');
-            return $this->redirectToRoute('user_choose_auth');
+            return $this->redirectToRoute('app_user_login');
         }
 
         $product = $this->productRepo->find($id);
@@ -86,10 +83,8 @@ class FrontCartController extends AbstractController
             return $this->redirectToRoute('app_shop_home');
         }
 
-        // Create or get DB cart (session stored id)
         $cart = $this->getOrCreateCartForSession($request, $user);
 
-        // Add product
         if (method_exists($cart, 'addProduct')) {
             $cart->addProduct($product);
         } else {
@@ -97,14 +92,13 @@ class FrontCartController extends AbstractController
         }
 
         $this->em->flush();
-
         $this->addFlash('success', $product->getLibelle() . ' added to cart.');
-        return $this->redirectToRoute('app_shop_home');
+
+        return $this->redirectToRoute('front_cart_index');
     }
 
     /**
-     * Resume saved add-after-auth (call after login/register success redirect).
-     * Reads 'intended_add_id' from session and performs add logic server-side.
+     * Resume add after login
      */
     #[Route('/basket/resume-add', name: 'front_cart_resume_add', methods: ['GET'])]
     public function resumeAdd(Request $request): RedirectResponse
@@ -116,12 +110,10 @@ class FrontCartController extends AbstractController
             return $this->redirectToRoute('app_shop_home');
         }
 
-        // Ensure user is now a front User
         $user = $this->getUser();
         if (!($user instanceof \App\Entity\User)) {
-            // still not an actual user — send back to auth page
-            $this->addFlash('info', 'Please complete login or registration to continue.');
-            return $this->redirectToRoute('user_choose_auth');
+            $this->addFlash('info', 'Please login or register to continue.');
+            return $this->redirectToRoute('app_user_login');
         }
 
         $product = $this->productRepo->find((int)$intended);
@@ -131,7 +123,6 @@ class FrontCartController extends AbstractController
             return $this->redirectToRoute('app_shop_home');
         }
 
-        // Create or get cart, add product
         $cart = $this->getOrCreateCartForSession($request, $user);
 
         if (method_exists($cart, 'addProduct')) {
@@ -141,8 +132,6 @@ class FrontCartController extends AbstractController
         }
 
         $this->em->flush();
-
-        // cleanup intent and redirect to basket or shop as you prefer
         $session->remove('intended_add_id');
         $session->remove('intended_return_route');
 
@@ -151,7 +140,7 @@ class FrontCartController extends AbstractController
     }
 
     /**
-     * Remove product from DB cart.
+     * Remove product from basket
      */
     #[Route('/basket/remove/{id}', name: 'front_cart_remove', methods: ['POST'])]
     public function remove(int $id, Request $request): RedirectResponse
@@ -191,7 +180,7 @@ class FrontCartController extends AbstractController
     }
 
     /**
-     * Checkout: create Order from Cart, remove cart, clear session.
+     * Checkout
      */
     #[Route('/basket/checkout', name: 'front_cart_checkout', methods: ['POST'])]
     public function checkout(Request $request): RedirectResponse
@@ -215,7 +204,6 @@ class FrontCartController extends AbstractController
             return $this->redirectToRoute('app_shop_home');
         }
 
-        // create Order and copy products
         $order = new Order();
         if (method_exists($order, 'setCreatedAt')) {
             $order->setCreatedAt(new \DateTimeImmutable());
@@ -241,7 +229,7 @@ class FrontCartController extends AbstractController
         }
 
         $this->em->persist($order);
-        $this->em->remove($cart); // remove cart after conversion
+        $this->em->remove($cart);
         $this->em->flush();
 
         $session->remove('db_cart_id');
@@ -251,32 +239,36 @@ class FrontCartController extends AbstractController
     }
 
     /**
-     * Helper: get or create a DB Cart, store id in session.
-     * If a front User is provided, set as owner (only User, not Admin).
+     * Helper: create or retrieve cart
      */
     private function getOrCreateCartForSession(Request $request, ?\App\Entity\User $user = null): Cart
     {
         $session = $request->getSession();
         $cartId = $session->get('db_cart_id');
 
+        // Try to get cart from session
         $cart = $cartId ? $this->em->getRepository(Cart::class)->find($cartId) : null;
 
+        // If no cart in session, try to get existing cart for user
+        if (!$cart && $user instanceof \App\Entity\User) {
+            $cart = $this->em->getRepository(Cart::class)->findOneBy(['owner' => $user]);
+        }
+
+        // If no cart, create new one
         if (!$cart) {
             $cart = new Cart();
-
             if ($user instanceof \App\Entity\User && method_exists($cart, 'setOwner')) {
                 $cart->setOwner($user);
             }
-
             if (method_exists($cart, 'setCreatedAt')) {
                 $cart->setCreatedAt(new \DateTimeImmutable());
             }
 
             $this->em->persist($cart);
             $this->em->flush();
-
-            $session->set('db_cart_id', $cart->getId());
         }
+
+        $session->set('db_cart_id', $cart->getId());
 
         return $cart;
     }
