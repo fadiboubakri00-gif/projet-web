@@ -55,6 +55,7 @@ security:
         - { path: ^/category, roles: ROLE_ADMIN }
         - { path: ^/order, roles: ROLE_ADMIN }
         - { path: ^/user, roles: ROLE_ADMIN }
+        - { path: ^/cart, roles: ROLE_ADMIN }
 
         # Shop user protected routes
         - { path: ^/shop/cart, roles: ROLE_USER }

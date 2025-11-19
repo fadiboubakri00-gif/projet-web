@@ -1,5 +1,5 @@
 {# templates/shop/index.html.twig #}
-{% extends 'base.html.twig' %}
+{% extends 'base_user.html.twig' %}
 
 {% block title %}Darbouka Shop{% endblock %}
 
@@ -16,6 +16,14 @@
                 {% if app.user %}
                     <li class="nav-item me-3 text-white">
                         👋 Hello, <strong>{{ app.user.username }}</strong>
+                    </li>
+                    <li class="nav-item me-3">
+                        <a href="{{ path('front_cart_index') }}" class="btn btn-outline-info rounded-pill px-3 position-relative">
+                            🛒 Cart
+                            <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
+                                0
+                            </span>
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ path('app_user_logout') }}" class="btn btn-outline-danger rounded-pill px-3">
@@ -44,6 +52,11 @@
         🎵 Welcome to Darbouka Shop
     </h1>
 
+    <div id="notification" class="alert alert-info alert-dismissible fade" role="alert" style="display: none; position: fixed; top: 80px; right: 20px; z-index: 1050; width: 300px;">
+        <span id="notification-message"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
     <div class="row">
         {% for product in products %}
             <div class="col-md-4 mb-4">
@@ -57,9 +70,9 @@
                                 : product.description }}
                         </p>
                         <h4 class="text-info mb-3">{{ product.price }} TND</h4>
-                        <form method="post" action="{{ path('front_cart_add', {'id': product.id}) }}">
+                        <form method="post" action="{{ path('front_cart_add', {'id': product.id}) }}" class="add-to-cart-form">
                             <input type="hidden" name="_token" value="{{ csrf_token('basket_add' ~ product.id) }}">
-                            <button class="btn btn-info w-100 rounded-pill">
+                            <button type="button" class="btn btn-info w-100 rounded-pill add-to-cart-btn" data-product-id="{{ product.id }}" data-product-name="{{ product.libelle }}">
                                 Add to Cart <i class="bi bi-cart-plus"></i>
                             </button>
                         </form>
@@ -73,4 +86,90 @@
         {% endfor %}
     </div>
 </div>
+
+<script>
+document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const form = this.closest('.add-to-cart-form');
+        const productId = this.dataset.productId;
+        const productName = this.dataset.productName;
+        const token = form.querySelector('input[name="_token"]').value;
+        
+        // Disable button to prevent multiple clicks
+        this.disabled = true;
+        this.textContent = 'Adding...';
+        
+        fetch(`/basket/add/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `_token=${token}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Re-enable button
+            this.disabled = false;
+            this.innerHTML = 'Add to Cart <i class="bi bi-cart-plus"></i>';
+            
+            if (data.success) {
+                // Show notification
+                showNotification(data.message, 'success');
+                
+                // Update cart badge
+                updateCartBadge(data.cartCount);
+            } else if (data.redirect) {
+                // Redirect to login
+                window.location.href = data.redirect;
+            } else {
+                showNotification(data.message, 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            this.disabled = false;
+            this.innerHTML = 'Add to Cart <i class="bi bi-cart-plus"></i>';
+            showNotification('An error occurred. Please try again.', 'danger');
+        });
+    });
+});
+
+function showNotification(message, type) {
+    const notification = document.getElementById('notification');
+    const messageEl = document.getElementById('notification-message');
+    
+    messageEl.textContent = message;
+    notification.className = `alert alert-${type} alert-dismissible fade show`;
+    notification.style.display = 'block';
+    
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        notification.style.display = 'none';
+    }, 3000);
+}
+
+function updateCartBadge(count) {
+    const badge = document.getElementById('cart-badge');
+    if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = 'inline-block';
+    }
+}
+
+// Load cart count on page load
+function loadCartCount() {
+    fetch('/basket/count')
+        .then(response => response.json())
+        .then(data => {
+            updateCartBadge(data.count);
+        })
+        .catch(error => console.error('Error loading cart count:', error));
+}
+
+// Load cart count when page loads
+document.addEventListener('DOMContentLoaded', loadCartCount);
+</script>
 {% endblock %}

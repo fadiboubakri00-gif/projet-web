@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Darbouka Admin{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    {% block stylesheets %}
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1e1f29, #23252f);
+            color: #fff;
+            transition: all 0.5s;
+        }
+
+        .navbar {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .dashboard-container {
+            padding: 120px 20px 50px 20px;
+        }
+
+        .dashboard-title {
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: #00d2ff;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.5);
+        }
+
+        .entity-icon {
+            font-size: 3rem;
+            color: #00d2ff;
+            transition: transform 0.3s;
+        }
+
+        .card:hover .entity-icon {
+            transform: scale(1.2);
+        }
+
+        .card h3.count {
+            font-size: 2rem;
+            color: #00d2ff;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .card p {
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            border-radius: 50%;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 1000;
+        }
+
+        .theme-toggle i {
+            color: #fff;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.2);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+        }
+    </style>
+    {% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top" style="background:#0a0a0a;">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ path('app_shop_home') }}">🧭 Darbouka Shop</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-center">
+                {% if app.user %}
+                    <li class="nav-item me-3 text-white">
+                        👋 Hello, <strong>{{ attribute(app.user, 'username') is defined ? app.user.username : app.user.userIdentifier }}</strong>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('app_user_logout') }}" class="btn btn-outline-danger rounded-pill px-3">
+                            Logout
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item me-2">
+                        <a href="{{ path('app_user_login') }}" class="btn btn-primary rounded-pill px-3">
+                            Sign In
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('app_register') }}" class="btn btn-outline-light rounded-pill px-3">
+                            Register
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="theme-toggle" id="themeToggle">
+    <i class="bi bi-moon-stars-fill"></i>
+</div>
+
+<main class="dashboard-container">
+    {% block body %}{% endblock %}
+</main>
+
+<footer class="text-center py-3 mt-5 bg-dark text-white">
+    &copy; {{ "now"|date("Y") }} Darbouka Shop
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const toggle = document.getElementById('themeToggle');
+const icon = toggle.querySelector('i');
+let dark = true;
+toggle.addEventListener('click', () => {
+    document.body.style.background = dark
+        ? 'linear-gradient(135deg, #e3f2fd, #ffffff)'
+        : 'linear-gradient(135deg, #1e1f29, #23252f)';
+    document.body.style.color = dark ? '#212529' : '#fff';
+
+    icon.classList.toggle('bi-brightness-high-fill');
+    icon.classList.toggle('bi-moon-stars-fill');
+    icon.style.color = dark ? '#fff' : '#ffd700';
+
+    dark = !dark;
+});
+</script>
+
+{% block javascripts %}{% endblock %}
+</body>
+</html>

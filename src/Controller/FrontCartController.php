@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class FrontCartController extends AbstractController
@@ -57,14 +58,13 @@ class FrontCartController extends AbstractController
     }
 
     /**
-     * Add product to basket
+     * Add product to basket (AJAX)
      */
     #[Route('/basket/add/{id}', name: 'front_cart_add', methods: ['POST'])]
-    public function add(int $id, Request $request): RedirectResponse
+    public function add(int $id, Request $request): JsonResponse
     {
         if (!$this->isCsrfTokenValid('basket_add'.$id, $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_shop_home');
+            return new JsonResponse(['success' => false, 'message' => 'Invalid CSRF token.'], 400);
         }
 
         $user = $this->getUser();
@@ -73,14 +73,12 @@ class FrontCartController extends AbstractController
         if (!($user instanceof \App\Entity\User)) {
             $request->getSession()->set('intended_add_id', $id);
             $request->getSession()->set('intended_return_route', 'front_cart_resume_add');
-            $this->addFlash('info', 'Please login or register to add items to your cart.');
-            return $this->redirectToRoute('app_user_login');
+            return new JsonResponse(['success' => false, 'redirect' => $this->generateUrl('app_user_login'), 'message' => 'Please login to add items.'], 401);
         }
 
         $product = $this->productRepo->find($id);
         if (!$product) {
-            $this->addFlash('warning', 'Product not found.');
-            return $this->redirectToRoute('app_shop_home');
+            return new JsonResponse(['success' => false, 'message' => 'Product not found.'], 404);
         }
 
         $cart = $this->getOrCreateCartForSession($request, $user);
@@ -92,9 +90,14 @@ class FrontCartController extends AbstractController
         }
 
         $this->em->flush();
-        $this->addFlash('success', $product->getLibelle() . ' added to cart.');
 
-        return $this->redirectToRoute('front_cart_index');
+        $cartCount = count($cart->getProducts());
+
+        return new JsonResponse([
+            'success' => true,
+            'message' => $product->getLibelle() . ' added to cart.',
+            'cartCount' => $cartCount
+        ]);
     }
 
     /**
@@ -137,6 +140,26 @@ class FrontCartController extends AbstractController
 
         $this->addFlash('success', $product->getLibelle() . ' added to cart.');
         return $this->redirectToRoute('front_cart_index');
+    }
+
+    /**
+     * Get cart count (for navbar badge)
+     */
+    #[Route('/basket/count', name: 'front_cart_count', methods: ['GET'])]
+    public function getCartCount(Request $request): JsonResponse
+    {
+        $session = $request->getSession();
+        $cartId = $session->get('db_cart_id');
+        $count = 0;
+
+        if ($cartId) {
+            $cart = $this->em->getRepository(Cart::class)->find($cartId);
+            if ($cart) {
+                $count = count($cart->getProducts());
+            }
+        }
+
+        return new JsonResponse(['count' => $count]);
     }
 
     /**
